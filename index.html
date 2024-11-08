@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Paragon</title>
+</head>
+<body>
+    <hr>
+    <h1 id="receipt-title">PARAGON </h1>
+    <hr>
+    <table id="receipt">
+        <thead>
+            <tr>
+                <th>LB</th>
+                <th>NAZWA</th>
+                <th>ILOĆŚ</th>
+                <th>CENA</th>
+                <th>SUMA</th>
+                <th>AKCJA</th>
+            </tr>
+        </thead>
+        <tbody id="receipt-items">
+            
+        </tbody>
+    </table>
+    <div id="total-container">
+        <p id="total-text">RAZEM</p>
+        <p id="total">0.00</p>
+    </div>
+    <button id="add-item">Dodaj</button>
+    <dialog id="item-dialog">
+        <form id="item-form">
+            <label for="name">Nazwa:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="price">Cena jednostkowa:</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" required>
+            <label for="quantity">Ilość:</label>
+            <input type="number" id="quantity" name="quantity" min="1" required>
+            <button type="submit">Zapisz</button>
+            <button type="button" id="cancel">Anuluj</button>
+        </form>
+    </dialog>
+
+</body>
+</html>
