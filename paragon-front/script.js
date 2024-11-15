@@ -3,53 +3,27 @@ const itemDialog = document.getElementById("item-dialog");
 const itemForm = document.getElementById("item-form");
 const addItemButton = document.getElementById("add-item");
 const totalElement = document.getElementById("total");
-let items = JSON.parse(localStorage.getItem("receiptItems")) || [];
 let total = 0;
 
-function editItem(index) {
-    const item = items[index];
-    itemForm.name.value = item.name;
-    itemForm.price.value = item.price;
-    itemForm.quantity.value = item.quantity;
-    itemDialog.showModal();
-
-    itemForm.onsubmit = (e) => {
-        e.preventDefault();
-        const prev = items[index].price * items[index].quantity;
-        items[index] = {
-            name: itemForm.name.value,
-            price: parseFloat(itemForm.price.value),
-            quantity: parseInt(itemForm.quantity.value),
-        };
-        const newPrice = itemForm.price.value * itemForm.quantity.value;
-        total = total - prev + newPrice;
-        renderTotal();
-        renderReceipt();
-        itemDialog.close();
-    };
+async function fetchItems() {
+    const response = await fetch('http://localhost:3000/items');
+    const data = await response.json();
+    return data;
 }
 
-function deleteItem(index) {
-    if (confirm("Czy na pewno chcesz usunąć tę pozycję?")) {
-        const itemTotal = items[index].price * items[index].quantity;
-        total -= itemTotal;
-        items.splice(index, 1);
-        renderTotal();
-        renderReceipt();
-    }
-}
-
-function renderTotal(){
+async function renderTotal(){
+    total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     totalElement.textContent = total.toFixed(2);
 }
 
-function renderReceipt() {
+async function renderReceipt() {
+    items = await fetchItems();
     receiptTableBody.textContent = "";
     items.forEach((item, index) => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${index+1}</td>
+            <td>${index + 1}</td>
             <td>${item.name}</td>
             <td>${item.quantity}</td>
             <td>${item.price.toFixed(2)}</td>
@@ -62,27 +36,66 @@ function renderReceipt() {
 
         receiptTableBody.appendChild(row);
     });
-    localStorage.setItem("receiptItems", JSON.stringify(items));
+    renderTotal();
 }
 
-function addItem(item) {
-    items.push(item);
-    total += item.price * item.quantity;
-    renderTotal();
+async function addItem(item) {
+    await fetch('http://localhost:3000/items', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+    });
     renderReceipt();
+}
+
+async function editItem(index) {
+    const item = items[index];
+    itemForm.name.value = item.name;
+    itemForm.price.value = item.price;
+    itemForm.quantity.value = item.quantity;
+    itemDialog.showModal();
+
+    itemForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const updatedItem = {
+            name: itemForm.name.value,
+            price: parseFloat(itemForm.price.value),
+            quantity: parseInt(itemForm.quantity.value),
+        };
+        await fetch(`http://localhost:3000/items/${index}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedItem)
+        });
+        itemDialog.close();
+        renderReceipt();
+    };
+}
+
+async function deleteItem(index) {
+    if (confirm("Czy na pewno chcesz usunąć tę pozycję?")) {
+        await fetch(`http://localhost:3000/items/${index}`, {
+            method: 'DELETE'
+        });
+        renderReceipt();
+    }
 }
 
 addItemButton.addEventListener("click", () => {
     itemForm.reset();
     itemDialog.showModal();
-    itemForm.onsubmit = (e) => {
+    itemForm.onsubmit = async (e) => {
         e.preventDefault();
         const newItem = {
             name: itemForm.name.value,
             price: parseFloat(itemForm.price.value),
             quantity: parseInt(itemForm.quantity.value),
         };
-        addItem(newItem);
+        await addItem(newItem);
         itemDialog.close();
     };
 });
@@ -90,4 +103,3 @@ addItemButton.addEventListener("click", () => {
 document.getElementById("cancel").addEventListener("click", () => itemDialog.close());
 
 renderReceipt();
-
