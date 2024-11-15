@@ -39,9 +39,12 @@ function deleteItem(index) {
     }
 }
 
-function renderTotal(){
+
+async function renderTotal(){
+    total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     totalElement.textContent = total.toFixed(2);
 }
+
 
 function renderReceipt() {
     receiptTableBody.textContent = "";
@@ -63,6 +66,7 @@ function renderReceipt() {
         receiptTableBody.appendChild(row);
     });
     localStorage.setItem("receiptItems", JSON.stringify(items));
+    renderTotal();
 }
 
 function addItem(item) {
@@ -90,4 +94,3 @@ addItemButton.addEventListener("click", () => {
 document.getElementById("cancel").addEventListener("click", () => itemDialog.close());
 
 renderReceipt();
-
