@@ -1,10 +1,16 @@
 {
   "items": [
     {
-      "name": "jajko",
-      "price": 10,
+      "name": "mleko",
+      "price": 4,
       "quantity": 1,
-      "id": "c881"
+      "id": "39af"
+    },
+    {
+      "name": "chleb",
+      "price": 2,
+      "quantity": 1,
+      "id": "4d77"
     }
   ]
 }
