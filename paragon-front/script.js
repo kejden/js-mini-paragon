@@ -6,12 +6,12 @@ const totalElement = document.getElementById("total");
 let total = 0;
 
 async function fetchItems() {
-    const response = await fetch('http://localhost:3000/items');
+    const response = await fetch('http://localhost:3001/items');
     const data = await response.json();
     return data;
 }
 
-async function renderTotal(){
+async function renderTotal(items){
     total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     totalElement.textContent = total.toFixed(2);
 }
@@ -36,11 +36,11 @@ async function renderReceipt() {
 
         receiptTableBody.appendChild(row);
     });
-    renderTotal();
+    renderTotal(items);
 }
 
 async function addItem(item) {
-    await fetch('http://localhost:3000/items', {
+    await fetch('http://localhost:3001/items', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -51,34 +51,41 @@ async function addItem(item) {
 }
 
 async function editItem(index) {
-    const item = items[index];
-    itemForm.name.value = item.name;
-    itemForm.price.value = item.price;
-    itemForm.quantity.value = item.quantity;
-    itemDialog.showModal();
+    const response = await fetch(`http://localhost:3001/items/${index}`);
+    if (response.ok) {
+        const item = await response.json();
+        itemForm.name.value = item.name;
+        itemForm.price.value = item.price;
+        itemForm.quantity.value = item.quantity;
+        itemDialog.showModal();
 
-    itemForm.onsubmit = async (e) => {
-        e.preventDefault();
-        const updatedItem = {
-            name: itemForm.name.value,
-            price: parseFloat(itemForm.price.value),
-            quantity: parseInt(itemForm.quantity.value),
+        itemForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const updatedItem = {
+                name: itemForm.name.value,
+                price: parseFloat(itemForm.price.value),
+                quantity: parseInt(itemForm.quantity.value),
+            };
+            const updateResponse = await fetch(`http://localhost:3001/items/${index}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedItem)
+            });
+            if (updateResponse.ok) {
+                itemDialog.close();
+                await renderReceipt();
+            }
         };
-        await fetch(`http://localhost:3000/items/${index}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedItem)
-        });
-        itemDialog.close();
-        renderReceipt();
-    };
+    } else {
+        alert("Nie znaleziono przedmiotu do edytowania");
+    }
 }
 
 async function deleteItem(index) {
     if (confirm("Czy na pewno chcesz usunąć tę pozycję?")) {
-        await fetch(`http://localhost:3000/items/${index}`, {
+        await fetch(`http://localhost:3001/items/${index}`, {
             method: 'DELETE'
         });
         renderReceipt();
