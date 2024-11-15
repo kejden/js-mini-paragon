@@ -1,16 +1,10 @@
 {
   "items": [
     {
-      "id": "c881",
       "name": "jajko",
-      "price": 5,
-      "quantity": 1
-    },
-    {
-      "id": "1597",
-      "name": "woda",
-      "price": 6,
-      "quantity": 1
+      "price": 10,
+      "quantity": 1,
+      "id": "c881"
     }
   ]
 }

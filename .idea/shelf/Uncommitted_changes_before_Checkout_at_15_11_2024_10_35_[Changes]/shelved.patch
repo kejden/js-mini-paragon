@@ -1,0 +1,87 @@
+Index: paragon-front/script.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const receiptTableBody = document.getElementById(\"receipt-items\");\r\nconst itemDialog = document.getElementById(\"item-dialog\");\r\nconst itemForm = document.getElementById(\"item-form\");\r\nconst addItemButton = document.getElementById(\"add-item\");\r\nconst totalElement = document.getElementById(\"total\");\r\nlet total = 0;\r\n\r\nasync function fetchItems() {\r\n    const response = await fetch('http://localhost:3000/items');\r\n    const data = await response.json();\r\n    return data;\r\n}\r\n\r\nasync function renderTotal(){\r\n    total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);\r\n    totalElement.textContent = total.toFixed(2);\r\n}\r\n\r\nasync function renderReceipt() {\r\n    items = await fetchItems();\r\n    receiptTableBody.textContent = \"\";\r\n    items.forEach((item, index) => {\r\n        const row = document.createElement(\"tr\");\r\n\r\n        row.innerHTML = `\r\n            <td>${index + 1}</td>\r\n            <td>${item.name}</td>\r\n            <td>${item.quantity}</td>\r\n            <td>${item.price.toFixed(2)}</td>\r\n            <td>${(item.price * item.quantity).toFixed(2)}</td>\r\n            <td>\r\n                <button id=\"edit\" onclick=\"editItem(${index})\">Edytuj</button>\r\n                <button id=\"delete\" onclick=\"deleteItem(${index})\">Usuń</button>\r\n            </td>\r\n        `;\r\n\r\n        receiptTableBody.appendChild(row);\r\n    });\r\n    renderTotal();\r\n}\r\n\r\nasync function addItem(item) {\r\n    await fetch('http://localhost:3000/items', {\r\n        method: 'POST',\r\n        headers: {\r\n            'Content-Type': 'application/json'\r\n        },\r\n        body: JSON.stringify(item)\r\n    });\r\n    renderReceipt();\r\n}\r\n\r\nasync function editItem(index) {\r\n    const item = items[index];\r\n    itemForm.name.value = item.name;\r\n    itemForm.price.value = item.price;\r\n    itemForm.quantity.value = item.quantity;\r\n    itemDialog.showModal();\r\n\r\n    itemForm.onsubmit = async (e) => {\r\n        e.preventDefault();\r\n        const updatedItem = {\r\n            name: itemForm.name.value,\r\n            price: parseFloat(itemForm.price.value),\r\n            quantity: parseInt(itemForm.quantity.value),\r\n        };\r\n        await fetch(`http://localhost:3000/items/${index}`, {\r\n            method: 'PUT',\r\n            headers: {\r\n                'Content-Type': 'application/json'\r\n            },\r\n            body: JSON.stringify(updatedItem)\r\n        });\r\n        itemDialog.close();\r\n        renderReceipt();\r\n    };\r\n}\r\n\r\nasync function deleteItem(index) {\r\n    if (confirm(\"Czy na pewno chcesz usunąć tę pozycję?\")) {\r\n        await fetch(`http://localhost:3000/items/${index}`, {\r\n            method: 'DELETE'\r\n        });\r\n        renderReceipt();\r\n    }\r\n}\r\n\r\naddItemButton.addEventListener(\"click\", () => {\r\n    itemForm.reset();\r\n    itemDialog.showModal();\r\n    itemForm.onsubmit = async (e) => {\r\n        e.preventDefault();\r\n        const newItem = {\r\n            name: itemForm.name.value,\r\n            price: parseFloat(itemForm.price.value),\r\n            quantity: parseInt(itemForm.quantity.value),\r\n        };\r\n        await addItem(newItem);\r\n        itemDialog.close();\r\n    };\r\n});\r\n\r\ndocument.getElementById(\"cancel\").addEventListener(\"click\", () => itemDialog.close());\r\n\r\nrenderReceipt();\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/paragon-front/script.js b/paragon-front/script.js
+--- a/paragon-front/script.js	(revision 8aceb72ad304035bd7353170c905a20cbbe39074)
++++ b/paragon-front/script.js	(date 1731625818699)
+@@ -11,7 +11,7 @@
+     return data;
+ }
+ 
+-async function renderTotal(){
++async function renderTotal(items){
+     total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+     totalElement.textContent = total.toFixed(2);
+ }
+@@ -36,7 +36,7 @@
+ 
+         receiptTableBody.appendChild(row);
+     });
+-    renderTotal();
++    renderTotal(items);
+ }
+ 
+ async function addItem(item) {
+@@ -51,29 +51,36 @@
+ }
+ 
+ async function editItem(index) {
+-    const item = items[index];
+-    itemForm.name.value = item.name;
+-    itemForm.price.value = item.price;
+-    itemForm.quantity.value = item.quantity;
+-    itemDialog.showModal();
++    const response = await fetch(`http://localhost:3000/items/${index}`);
++    if (response.ok) {
++        const item = await response.json();
++        itemForm.name.value = item.name;
++        itemForm.price.value = item.price;
++        itemForm.quantity.value = item.quantity;
++        itemDialog.showModal();
+ 
+-    itemForm.onsubmit = async (e) => {
+-        e.preventDefault();
+-        const updatedItem = {
+-            name: itemForm.name.value,
+-            price: parseFloat(itemForm.price.value),
+-            quantity: parseInt(itemForm.quantity.value),
+-        };
+-        await fetch(`http://localhost:3000/items/${index}`, {
+-            method: 'PUT',
+-            headers: {
+-                'Content-Type': 'application/json'
+-            },
+-            body: JSON.stringify(updatedItem)
+-        });
+-        itemDialog.close();
+-        renderReceipt();
+-    };
++        itemForm.onsubmit = async (e) => {
++            e.preventDefault();
++            const updatedItem = {
++                name: itemForm.name.value,
++                price: parseFloat(itemForm.price.value),
++                quantity: parseInt(itemForm.quantity.value),
++            };
++            const updateResponse = await fetch(`http://localhost:3000/items/${index}`, {
++                method: 'PUT',
++                headers: {
++                    'Content-Type': 'application/json'
++                },
++                body: JSON.stringify(updatedItem)
++            });
++            if (updateResponse.ok) {
++                itemDialog.close();
++                await renderReceipt();
++            }
++        };
++    } else {
++        alert("Nie znaleziono przedmiotu do edytowania");
++    }
+ }
+ 
+ async function deleteItem(index) {

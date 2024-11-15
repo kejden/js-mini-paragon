@@ -1,0 +1,43 @@
+Index: paragon-front/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <script src=\"script.js\" defer></script>\r\n    <link rel=\"stylesheet\" href=\"style.css\">\r\n    <title>Paragon</title>\r\n</head>\r\n<body>\r\n    <hr>\r\n    <h1 id=\"receipt-title\">PARAGON </h1>\r\n    <hr>\r\n    <table id=\"receipt\">\r\n        <thead>\r\n            <tr>\r\n                <th>LB</th>\r\n                <th>NAZWA</th>\r\n                <th>ILOĆŚ</th>\r\n                <th>CENA</th>\r\n                <th>SUMA</th>\r\n                <th>AKCJA</th>\r\n            </tr>\r\n        </thead>\r\n        <tbody id=\"receipt-items\">\r\n            \r\n        </tbody>\r\n    </table>\r\n    <div id=\"total-container\">\r\n        <p id=\"total-text\">RAZEM</p>\r\n        <p id=\"total\">0.00</p>\r\n    </div>\r\n    <button id=\"add-item\">Dodaj</button>\r\n    <dialog id=\"item-dialog\">\r\n        <form id=\"item-form\">\r\n            <label for=\"name\">Nazwa:</label>\r\n            <input type=\"text\" id=\"name\" name=\"name\" required>\r\n            <label for=\"price\">Cena jednostkowa:</label>\r\n            <input type=\"number\" id=\"price\" name=\"price\" step=\"0.01\" min=\"0\" required>\r\n            <label for=\"quantity\">Ilość:</label>\r\n            <input type=\"number\" id=\"quantity\" name=\"quantity\" min=\"1\" required>\r\n            <button type=\"submit\">Zapisz</button>\r\n            <button type=\"button\" id=\"cancel\">Anuluj</button>\r\n        </form>\r\n    </dialog>\r\n\r\n</body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/paragon-front/index.html b/paragon-front/index.html
+--- a/paragon-front/index.html	(revision 8aceb72ad304035bd7353170c905a20cbbe39074)
++++ b/paragon-front/index.html	(date 1731625213073)
+@@ -35,7 +35,7 @@
+         <form id="item-form">
+             <label for="name">Nazwa:</label>
+             <input type="text" id="name" name="name" required>
+-            <label for="price">Cena jednostkowa:</label>
++            <label for="price">Cena:</label>
+             <input type="number" id="price" name="price" step="0.01" min="0" required>
+             <label for="quantity">Ilość:</label>
+             <input type="number" id="quantity" name="quantity" min="1" required>
+Index: paragon-front/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>body {\r\n    font-family: Arial, sans-serif;\r\n    background-color: #f4f4f9;\r\n    color: #333;\r\n    margin: 0;\r\n    padding: 20px;\r\n}\r\n\r\nh1#receipt-title {\r\n    text-align: center;\r\n    color: #4a4a4a;\r\n    font-size: 24px;\r\n    margin: 10px 0;\r\n}\r\n\r\n#receipt {\r\n    width: 100%;\r\n    border-collapse: collapse;\r\n    margin: 20px 0;\r\n    background-color: #fff;\r\n    border: 1px solid #ddd;\r\n}\r\n\r\n#receipt thead tr {\r\n    background-color: #4a90e2;\r\n    color: white;\r\n}\r\n\r\n#receipt th, #receipt td {\r\n    padding: 12px;\r\n    text-align: center;\r\n    border-bottom: 1px solid #ddd;\r\n}\r\n\r\n#receipt td {\r\n    color: #333;\r\n}\r\n\r\n#receipt tbody tr:nth-child(even) {\r\n    background-color: hsl(0, 0%, 85%);\r\n}\r\n\r\nbutton {\r\n    padding: 6px 12px;\r\n    border: none;\r\n    cursor: pointer;\r\n    font-size: 14px;\r\n    margin: 5px 0;\r\n}\r\n\r\n#add-item {\r\n    background-color: #4CAF50;\r\n    color: white;\r\n    font-size: 16px;\r\n    border-radius: 4px;\r\n    padding: 8px 16px;\r\n    display: block;\r\n    margin: 20px auto;\r\n}\r\n\r\n#total-container {\r\n    display: flex;\r\n    justify-content: flex-end; \r\n    align-items: center; \r\n    gap: 8px; \r\n    font-size: 20px;\r\n    font-weight: bold;\r\n    color: #4a4a4a;\r\n    margin-top: 20px;\r\n}\r\n\r\ndialog#item-dialog {\r\n    padding: 20px;\r\n    border: 2px solid #4a90e2;\r\n    border-radius: 6px;\r\n    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);\r\n}\r\n\r\nform#item-form {\r\n    display: flex;\r\n    flex-direction: column;\r\n    gap: 12px;\r\n}\r\n\r\nlabel {\r\n    font-weight: bold;\r\n    color: #333;\r\n}\r\n\r\ninput[type=\"text\"], input[type=\"number\"] {\r\n    padding: 8px;\r\n    font-size: 14px;\r\n    border: 1px solid #ddd;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton[type=\"submit\"] {\r\n    background-color: #4a90e2;\r\n    color: white;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton#cancel {\r\n    background-color: #e74c3c;\r\n    color: white;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton#edit {\r\n    background-color: hsl(211, 78%, 57%);\r\n    color: white;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton#delete {\r\n    background-color: hsl(6, 78%, 57%);\r\n    color: white;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton#edit:hover {\r\n    background-color: hsl(211, 70%, 35%);\r\n    color: white;\r\n    border-radius: 4px;\r\n}\r\n\r\nbutton#delete:hover {\r\n    background-color: hsl(6, 70%, 35%);\r\n    color: white;\r\n    border-radius: 4px;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/paragon-front/style.css b/paragon-front/style.css
+--- a/paragon-front/style.css	(revision 8aceb72ad304035bd7353170c905a20cbbe39074)
++++ b/paragon-front/style.css	(date 1731625536484)
+@@ -120,12 +120,8 @@
+ 
+ button#edit:hover {
+     background-color: hsl(211, 70%, 35%);
+-    color: white;
+-    border-radius: 4px;
+ }
+ 
+ button#delete:hover {
+     background-color: hsl(6, 70%, 35%);
+-    color: white;
+-    border-radius: 4px;
+ }
+\ No newline at end of file

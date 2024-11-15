@@ -29,8 +29,8 @@ async function renderReceipt() {
             <td>${item.price.toFixed(2)}</td>
             <td>${(item.price * item.quantity).toFixed(2)}</td>
             <td>
-                <button id="edit" onclick="editItem(${index})">Edytuj</button>
-                <button id="delete" onclick="deleteItem(${index})">Usuń</button>
+                <button id="edit" onclick="editItem('${item.id}')">Edytuj</button>
+                <button id="delete" onclick="deleteItem('${item.id}')">Usuń</button>
             </td>
         `;
 
@@ -51,7 +51,12 @@ async function addItem(item) {
 }
 
 async function editItem(index) {
-    const item = items[index];
+    const item = await fetch(`http://localhost:3000/items/${index}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json());
     itemForm.name.value = item.name;
     itemForm.price.value = item.price;
     itemForm.quantity.value = item.quantity;
